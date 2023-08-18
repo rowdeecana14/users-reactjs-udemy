@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import classes from "./CreateUserForm.module.css";
 import Card from "../../../components/card/Card";
 import Button from "../../../components/button/Button";
@@ -6,11 +6,14 @@ import ErrorModal from "../../../components/modal/error/ErrorModal";
 
 function CreateUserForm({createUser}) {
 
+    const usernameRef = useRef();
+    const ageRef = useRef();
+
+    const [error, setError] = useState();
     const [ form, setForm ] = useState({
         username: "",
         age: 0
     });
-    const [error, setError] = useState();
 
     function onConfirm() {
         setError(null);
@@ -20,7 +23,7 @@ function CreateUserForm({createUser}) {
         let is_valid = true;
 
         for (var item in form) {
-            if(form[item] == "") {
+            if(form[item] === "") {
                 is_valid = false;
                 setError({
                     title: 'Invalid input',
@@ -48,6 +51,9 @@ function CreateUserForm({createUser}) {
 
     function onsubmitCreate(event) {
         event.preventDefault();
+        // useRef if you dont use useState
+        console.log(usernameRef.current.value);
+        console.log(ageRef.current.value);
 
         if(!validations()) {
             return;
@@ -79,12 +85,14 @@ function CreateUserForm({createUser}) {
                 <form onSubmit={onsubmitCreate}>
                     <label htmlFor="username">Username</label>
                     <input 
+                        ref={usernameRef}
                         id="username" type="text" 
                         value={form.username}
                         onChange={(event) => onchangeInput("username", event.target.value) } 
                     />
                     <label htmlFor="age">Age (Years)</label>
                     <input
+                        ref={ageRef}
                         id="age" type="number" 
                         value={form.age}
                         onChange={(event) => onchangeInput("age", event.target.value) } 
